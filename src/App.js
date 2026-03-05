@@ -1,9 +1,32 @@
 // App.js
 import React, { useState, useEffect } from 'react';
 import './App.css';
+import profilePic from './assets/images/ismail_potrait.jpg';
 
 function App() {
   const [isVisible, setIsVisible] = useState({});
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+      return savedTheme === 'dark';
+    }
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  });
+
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      localStorage.setItem('theme', 'light');
+    }
+  }, [isDarkMode]);
+
+  const toggleTheme = () => {
+    setIsDarkMode(!isDarkMode);
+  };
+
 
   useEffect(() => {
     const handleScroll = () => {
@@ -26,7 +49,7 @@ function App() {
 
   return (
     <div className="App">
-      <Navbar scrollToSection={scrollToSection} />
+      <Navbar scrollToSection={scrollToSection} isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
       <Hero />
       <Summary id="summary" isVisible={isVisible.summary} />
       <Skills id="skills" isVisible={isVisible.skills} />
@@ -38,7 +61,7 @@ function App() {
   );
 }
 
-const Navbar = ({ scrollToSection }) => {
+const Navbar = ({ scrollToSection, isDarkMode, toggleTheme }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -63,6 +86,11 @@ const Navbar = ({ scrollToSection }) => {
           <li><button onClick={() => scrollToSection('experience')}>Experience</button></li>
           <li><button onClick={() => scrollToSection('projects')}>Projects</button></li>
           <li><button onClick={() => scrollToSection('education')}>Education</button></li>
+          <li>
+            <button className="theme-toggle-btn" onClick={toggleTheme} aria-label="Toggle Dark Mode">
+              {isDarkMode ? '☀️' : '🌙'}
+            </button>
+          </li>
           <li>
             <a
               href="/resume/ismail-resume.pdf"
@@ -91,8 +119,8 @@ const Hero = () => {
             <a href="tel:+8801619524736" className="contact-link">
               <i className="fas fa-phone"></i> +880 1619-524736
             </a>
-            <a href="mailto:ismailshuvo555@gmail.com" className="contact-link">
-              <i className="fas fa-envelope"></i> ismailshuvo555@gmail.com
+            <a href="mailto:mdismail.cse59@gmail.com" className="contact-link">
+              <i className="fas fa-envelope"></i> mdismail.cse59@gmail.com
             </a>
             <a href="https://linkedin.com/in/ismail554" target="_blank" rel="noopener noreferrer" className="contact-link">
               <i className="fab fa-linkedin"></i> /ismail554
@@ -111,8 +139,8 @@ const Hero = () => {
           </div>
         </div>
         <div className="hero-image">
-          <div className="profile-placeholder">
-            <span>👨‍💻</span>
+          <div className="profile-image-container">
+            <img src={profilePic} alt="MD Ismail Hosen" className="profile-photo" />
           </div>
         </div>
       </div>
@@ -334,7 +362,7 @@ const Projects = ({ id, isVisible }) => {
 const Education = ({ id, isVisible }) => {
   const education = [
     {
-      degree: 'Bachelor of Science in Computer Science',
+      degree: 'BSc in Computer Science and Engineering',
       institution: 'Canadian University of Bangladesh',
       location: 'Dhaka, Bangladesh',
       period: '2025 — Present',
