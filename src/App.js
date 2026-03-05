@@ -1,10 +1,28 @@
 // App.js
 import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import './App.css';
 import profilePic from './assets/images/ismail_potrait.jpg';
 
+const sectionVariants = {
+  hidden: { opacity: 0, y: 50 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: "easeOut", staggerChildren: 0.2 }
+  }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: "easeOut" }
+  }
+};
+
 function App() {
-  const [isVisible, setIsVisible] = useState({});
   const [isDarkMode, setIsDarkMode] = useState(() => {
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme) {
@@ -27,20 +45,14 @@ function App() {
     setIsDarkMode(!isDarkMode);
   };
 
-
   useEffect(() => {
-    const handleScroll = () => {
-      const sections = document.querySelectorAll('section');
-      sections.forEach(section => {
-        const top = section.getBoundingClientRect().top;
-        const isVisible = top < window.innerHeight - 100;
-        setIsVisible(prev => ({ ...prev, [section.id]: isVisible }));
-      });
+    const handleMouseMove = (e) => {
+      document.documentElement.style.setProperty('--mouse-x', `${e.clientX}px`);
+      document.documentElement.style.setProperty('--mouse-y', `${e.clientY}px`);
     };
 
-    window.addEventListener('scroll', handleScroll);
-    handleScroll(); // Initial check
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
   const scrollToSection = (sectionId) => {
@@ -49,13 +61,14 @@ function App() {
 
   return (
     <div className="App">
+      <div className="cursor-glow"></div>
       <Navbar scrollToSection={scrollToSection} isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
       <Hero />
-      <Summary id="summary" isVisible={isVisible.summary} />
-      <Skills id="skills" isVisible={isVisible.skills} />
-      <Experience id="experience" isVisible={isVisible.experience} />
-      <Projects id="projects" isVisible={isVisible.projects} />
-      <Education id="education" isVisible={isVisible.education} />
+      <Summary id="summary" />
+      <Experience id="experience" />
+      <Projects id="projects" />
+      <Skills id="skills" />
+      <Education id="education" />
       <Footer />
     </div>
   );
@@ -82,9 +95,9 @@ const Navbar = ({ scrollToSection, isDarkMode, toggleTheme }) => {
         </button>
         <ul className={`nav-menu ${isMenuOpen ? 'active' : ''}`}>
           <li><button onClick={() => scrollToSection('summary')}>Summary</button></li>
-          <li><button onClick={() => scrollToSection('skills')}>Skills</button></li>
           <li><button onClick={() => scrollToSection('experience')}>Experience</button></li>
           <li><button onClick={() => scrollToSection('projects')}>Projects</button></li>
+          <li><button onClick={() => scrollToSection('skills')}>Skills</button></li>
           <li><button onClick={() => scrollToSection('education')}>Education</button></li>
           <li>
             <button className="theme-toggle-btn" onClick={toggleTheme} aria-label="Toggle Dark Mode">
@@ -109,13 +122,46 @@ const Navbar = ({ scrollToSection, isDarkMode, toggleTheme }) => {
 // Hero Component
 const Hero = () => {
   return (
-    <section className="hero">
+    <motion.section
+      className="hero"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.8 }}
+    >
       <div className="hero-content">
-        <div className="hero-text">
-          <h1>MD Ismail Hosen</h1>
-          <h2>Flutter Developer | Junior Software Engineer</h2>
-          <p>Building cross-platform mobile applications with Flutter</p>
-          <div className="hero-contact">
+        <motion.div
+          className="hero-text"
+          initial={{ x: -50, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+        >
+          <motion.h1
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+          >
+            MD Ismail Hosen
+          </motion.h1>
+          <motion.h2
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+          >
+            Flutter Developer | Junior Software Engineer
+          </motion.h2>
+          <motion.p
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.5 }}
+          >
+            Building cross-platform mobile applications with Flutter
+          </motion.p>
+          <motion.div
+            className="hero-contact"
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.6 }}
+          >
             <a href="tel:+8801619524736" className="contact-link">
               <i className="fas fa-phone"></i> +880 1619-524736
             </a>
@@ -128,33 +174,50 @@ const Hero = () => {
             <a href="https://github.com/Ismail554" target="_blank" rel="noopener noreferrer" className="contact-link">
               <i className="fab fa-github"></i> /Ismail554
             </a>
-          </div>
-          <div className="hero-buttons">
+          </motion.div>
+          <motion.div
+            className="hero-buttons"
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.7 }}
+          >
             <button className="btn primary" onClick={() => document.getElementById('projects').scrollIntoView({ behavior: 'smooth' })}>
               View Projects
             </button>
             <button className="btn secondary" onClick={() => document.getElementById('experience').scrollIntoView({ behavior: 'smooth' })}>
               Experience
             </button>
-          </div>
-        </div>
-        <div className="hero-image">
+          </motion.div>
+        </motion.div>
+        <motion.div
+          className="hero-image"
+          initial={{ x: 50, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+        >
           <div className="profile-image-container">
             <img src={profilePic} alt="MD Ismail Hosen" className="profile-photo" />
           </div>
-        </div>
+        </motion.div>
       </div>
-    </section>
+    </motion.section>
   );
 };
 
 // Summary Component
-const Summary = ({ id, isVisible }) => {
+const Summary = ({ id }) => {
   return (
-    <section id={id} className={`section summary ${isVisible ? 'visible' : ''}`}>
+    <motion.section
+      id={id}
+      className="section summary"
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: "-100px" }}
+      variants={sectionVariants}
+    >
       <div className="container">
         <h2 className="section-title">Professional Summary</h2>
-        <div className="summary-content">
+        <motion.div className="summary-content" variants={itemVariants}>
           <p>
             Mobile Application Developer with expertise in Flutter and a focus on building scalable,
             production-ready applications. Experienced in state management (Provider, GetX), Clean Architecture,
@@ -163,14 +226,14 @@ const Summary = ({ id, isVisible }) => {
             Committed to writing clean, maintainable code and delivering optimized applications for both Android
             and iOS platforms.
           </p>
-        </div>
+        </motion.div>
       </div>
-    </section>
+    </motion.section>
   );
 };
 
 // Skills Component
-const Skills = ({ id, isVisible }) => {
+const Skills = ({ id }) => {
   const skills = {
     languages: ['Dart', 'Java', 'C/C++'],
     frameworks: ['Flutter', 'GetX', 'Provider', 'Firebase', 'Agora SDK', 'Stripe SDK', 'Google Maps SDK'],
@@ -181,54 +244,61 @@ const Skills = ({ id, isVisible }) => {
   };
 
   return (
-    <section id={id} className={`section skills ${isVisible ? 'visible' : ''}`}>
+    <motion.section
+      id={id}
+      className="section skills"
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: "-100px" }}
+      variants={sectionVariants}
+    >
       <div className="container">
         <h2 className="section-title">Technical Skills</h2>
         <div className="skills-grid">
-          <div className="skill-category">
+          <motion.div className="skill-category" variants={itemVariants}>
             <h3>Languages</h3>
             <div className="skill-tags">
               {skills.languages.map(skill => <span key={skill} className="skill-tag">{skill}</span>)}
             </div>
-          </div>
-          <div className="skill-category">
+          </motion.div>
+          <motion.div className="skill-category" variants={itemVariants}>
             <h3>Frameworks & Libraries</h3>
             <div className="skill-tags">
               {skills.frameworks.map(skill => <span key={skill} className="skill-tag">{skill}</span>)}
             </div>
-          </div>
-          <div className="skill-category">
+          </motion.div>
+          <motion.div className="skill-category" variants={itemVariants}>
             <h3>Architecture & Concepts</h3>
             <div className="skill-tags">
               {skills.architecture.map(skill => <span key={skill} className="skill-tag">{skill}</span>)}
             </div>
-          </div>
-          <div className="skill-category">
+          </motion.div>
+          <motion.div className="skill-category" variants={itemVariants}>
             <h3>Developer Tools</h3>
             <div className="skill-tags">
               {skills.tools.map(skill => <span key={skill} className="skill-tag">{skill}</span>)}
             </div>
-          </div>
-          <div className="skill-category">
+          </motion.div>
+          <motion.div className="skill-category" variants={itemVariants}>
             <h3>Platforms</h3>
             <div className="skill-tags">
               {skills.platforms.map(skill => <span key={skill} className="skill-tag">{skill}</span>)}
             </div>
-          </div>
-          <div className="skill-category">
+          </motion.div>
+          <motion.div className="skill-category" variants={itemVariants}>
             <h3>Soft Skills</h3>
             <div className="skill-tags">
               {skills.soft.map(skill => <span key={skill} className="skill-tag">{skill}</span>)}
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 };
 
 // Experience Component
-const Experience = ({ id, isVisible }) => {
+const Experience = ({ id }) => {
   const experiences = [
     {
       title: 'Junior Flutter Developer | Assistant Team Leader',
@@ -256,12 +326,19 @@ const Experience = ({ id, isVisible }) => {
   ];
 
   return (
-    <section id={id} className={`section experience ${isVisible ? 'visible' : ''}`}>
+    <motion.section
+      id={id}
+      className="section experience"
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: "-100px" }}
+      variants={sectionVariants}
+    >
       <div className="container">
         <h2 className="section-title">Professional Experience</h2>
         <div className="timeline">
           {experiences.map((exp, index) => (
-            <div key={index} className="timeline-item">
+            <motion.div key={index} className="timeline-item" variants={itemVariants}>
               <div className="timeline-header">
                 <h3>{exp.title}</h3>
                 <span className="timeline-period">{exp.period}</span>
@@ -274,16 +351,16 @@ const Experience = ({ id, isVisible }) => {
                   <li key={idx}>{point}</li>
                 ))}
               </ul>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 };
 
 // Projects Component
-const Projects = ({ id, isVisible }) => {
+const Projects = ({ id }) => {
   const projects = [
     {
       name: 'Geography Geyser',
@@ -331,12 +408,19 @@ const Projects = ({ id, isVisible }) => {
   ];
 
   return (
-    <section id={id} className={`section projects ${isVisible ? 'visible' : ''}`}>
+    <motion.section
+      id={id}
+      className="section projects"
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: "-100px" }}
+      variants={sectionVariants}
+    >
       <div className="container">
         <h2 className="section-title">Projects</h2>
         <div className="projects-grid">
           {projects.map((project, index) => (
-            <div key={index} className="project-card">
+            <motion.div key={index} className="project-card" variants={itemVariants}>
               <div className="project-header">
                 <h3>{project.name}</h3>
                 <span className="project-badge">{project.tech.join(' • ')}</span>
@@ -350,16 +434,16 @@ const Projects = ({ id, isVisible }) => {
               <a href={project.link} target="_blank" rel="noopener noreferrer" className="project-link">
                 View on {project.linkText} →
               </a>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 };
 
 // Education Component
-const Education = ({ id, isVisible }) => {
+const Education = ({ id }) => {
   const education = [
     {
       degree: 'BSc in Computer Science and Engineering',
@@ -385,12 +469,19 @@ const Education = ({ id, isVisible }) => {
   ];
 
   return (
-    <section id={id} className={`section education ${isVisible ? 'visible' : ''}`}>
+    <motion.section
+      id={id}
+      className="section education"
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: "-100px" }}
+      variants={sectionVariants}
+    >
       <div className="container">
         <h2 className="section-title">Education</h2>
         <div className="education-list">
           {education.map((edu, index) => (
-            <div key={index} className="education-item">
+            <motion.div key={index} className="education-item" variants={itemVariants}>
               <div className="education-header">
                 <h3>{edu.degree}</h3>
                 <span className="education-period">{edu.period}</span>
@@ -399,11 +490,11 @@ const Education = ({ id, isVisible }) => {
                 <i className="fas fa-university"></i> {edu.institution} | {edu.location}
               </div>
               {edu.note && <span className="education-note">{edu.note}</span>}
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 };
 
